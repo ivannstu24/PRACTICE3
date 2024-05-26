@@ -1,222 +1,30 @@
 #include <iostream>
 #include <vector>
-#include <cmath>
-#include <array>
-#include <string>
 #include <algorithm>
-#include <cctype>
-#include <sstream>
-#include <fstream>
-#include <unordered_set>
-
-
-// Функция для проверки, является ли число суммой кубов своих цифр
-bool isSumOfCubes(int num) {
-    int originalNum = num;
-    int sumOfCubes = 0;
-    
-    while (num > 0) {
-        int digit = num % 10;
-        sumOfCubes += std::pow(digit, 3);
-        num /= 10;
-    }
-    
-    return sumOfCubes == originalNum;
-}
-
-
-// Функция для нахождения всех чисел в заданном диапазоне, которые можно представить в виде суммы кубов своих цифр
-std::vector<int> findSumOfCubesInRange(int start, int end) {
-    std::vector<int> result;
-    
-    for (int i = start; i <= end; ++i) {
-        if (isSumOfCubes(i)) {
-            result.push_back(i);
-        }
-    }
-    
-    return result;
-}
-
-// Функция для проверки, является ли строка палиндромом
-bool isPalindrome(const std::string& str) {
-    std::string cleanedStr;
-    // Убираем все небуквенные символы и переводим в нижний регистр
-    for (char c : str) {
-        if (std::isalnum(c)) {
-            cleanedStr += std::tolower(c);
-        }
-    }
-    
-    std::string reversedStr = cleanedStr;
-    std::reverse(reversedStr.begin(), reversedStr.end());
-    
-    return cleanedStr == reversedStr;
-}
-
-// Функция для проверки, можно ли разделить число на три тройки чисел, сумма которых равна N
-bool canDivideIntoThreeTriplets(int N) {
-    // Если N меньше 9, невозможно разбить его на три группы по три числа
-    if (N < 9) {
-        return false;
-    }
-    
-    // Проверяем, можно ли найти три тройки чисел, сумма которых равна N
-    for (int i = 1; i <= N - 6; ++i) {
-        for (int j = i; j <= N - i - 3; ++j) {
-            int k = N - i - j;
-            if (k >= j && k < i + j + k) {
-                return true;
-            }
-        }
-    }
-    
-    return false;
-}
-
-// Функция для нахождения длины наибольшей возрастающей подпоследовательности
-int lengthOfLIS(const std::vector<int>& nums) {
-    if (nums.empty()) return 0;
-    
-    std::vector<int> dp(nums.size(), 1);
-    
-    for (size_t i = 1; i < nums.size(); ++i) {
-        for (size_t j = 0; j < i; ++j) {
-            if (nums[i] > nums[j]) {
-                dp[i] = std::max(dp[i], dp[j] + 1);
-            }
-        }
-    }
-    
-    return *std::max_element(dp.begin(), dp.end());
-}
-
-// Функция для деления всех элементов массива на делитель
-std::vector<int> divideArray(const std::vector<int>& nums, int divisor) {
-    std::vector<int> result;
-    for (int num : nums) {
-        if (num % divisor == 0) {
-            result.push_back(num);
-        }
-    }
-    return result;
-}
-
-// Функция для нахождения всех троек Пифагора для n = 2
-std::vector<std::vector<int>> findPythagoreanTriplets(int n) {
-    std::vector<std::vector<int>> triplets;
-    for (int a = 1; a <= n; ++a) {
-        for (int b = a; b <= n; ++b) {
-            int c = std::sqrt(a * a + b * b);
-            if (c * c == a * a + b * b && c <= n) {
-                triplets.push_back({a, b, c});
-            }
-        }
-    }
-    return triplets;
-}
-
-// Функция для нахождения всех комбинаций чисел, сумма которых равна целевой сумме
-void findCombinations(const std::vector<int>& nums, int target, std::vector<int>& combination, int index, std::vector<std::vector<int>>& result) {
-    if (target == 0) {
-        result.push_back(combination);
-        return;
-    }
-    
-    for (int i = index; i < nums.size(); ++i) {
-        if (nums[i] <= target) {
-            combination.push_back(nums[i]);
-            findCombinations(nums, target - nums[i], combination, i, result);
-            combination.pop_back();
-        }
-    }
-}
-
-std::vector<std::vector<int>> combinationSum(const std::vector<int>& nums, int target) {
-    std::vector<std::vector<int>> result;
-    std::vector<int> combination;
-    findCombinations(nums, target, combination, 0, result);
-    return result;
-}
-
-
-std::vector<std::string> findWordsFromLetters(const std::vector<char>& letters, const std::unordered_set<std::string>& dictionary) {
-    std::vector<std::string> validWords;
-    for (const auto& word : dictionary) {
-        std::string sortedWord = word;
-        std::sort(sortedWord.begin(), sortedWord.end()); // Сортируем буквы в слове
-        std::vector<char> sortedLetters = letters;
-        std::sort(sortedLetters.begin(), sortedLetters.end()); // Сортируем буквы из входного массива
-        if (sortedWord.size() == sortedLetters.size() && std::equal(sortedWord.begin(), sortedWord.end(), sortedLetters.begin())) {
-            validWords.push_back(word);
-        }
-    }
-    return validWords;
-}
+#include <cmath>
 
 
 
 
+//Итераторы:
 
-bool arePermutations(const std::vector<int>& arr1, const std::vector<int>& arr2) {
-    if (arr1.size() != arr2.size()) {
-        return false;
-    }
+//element.begin(): Возвращает итератор на начало контейнера.
+//element.end(): Возвращает итератор на конец контейнера.
 
-    std::unordered_map<int, int> freqMap;
+//Функции из библиотеки алгоритмов:
 
-    // Заполнение частотного словаря для первого массива
-    for (int num : arr1) {
-        freqMap[num]++;
-    }
-
-    // Уменьшение частоты для каждого элемента второго массива
-    for (int num : arr2) {
-        if (freqMap.find(num) == freqMap.end()) {
-            // Элемент не найден в первом массиве
-            return false;
-        }
-        freqMap[num]--;
-        if (freqMap[num] == 0) {
-            freqMap.erase(num);
-        }
-    }
-
-    // Если все элементы второго массива обработаны, и частотный словарь пустой, то массивы - перестановки друг друга
-    return freqMap.empty();
-}
-
-
-
-
-// Функция для проверки, можно ли из букв первого слова составить второе слово
-bool canConstructWord(const std::string& word1, const std::string& word2) {
-    // Массивы для подсчета частоты букв в словах
-    std::array<int, 26> freq1 = {0};
-    std::array<int, 26> freq2 = {0};
-    
-    // Подсчет частоты букв в первом слове
-    for (char ch : word1) {
-        if (std::isalpha(ch)) {
-            freq1[std::tolower(ch) - 'a']++;
-        }
-    }
-    
-    // Подсчет частоты букв во втором слове
-    for (char ch : word2) {
-        if (std::isalpha(ch)) {
-            freq2[std::tolower(ch) - 'a']++;
-        }
-    }
-    
-    // Проверка, можно ли из букв первого слова составить второе слово
-    for (int i = 0; i < 26; ++i) {
-        if (freq2[i] > freq1[i]) {
-            return false; // Второе слово содержит больше букв i, чем первое слово
-        }
-    }
-    return true;
-}
+//copy_if: Копирует элементы, удовлетворяющие условию, в другой контейнер.
+//any_of: Проверяет, выполняется ли условие хотя бы для одного элемента в контейнере.
+//back_inserter: Возвращает итератор, который вставляет элементы в конец контейнера.
+//distance: Возвращает расстояние между двумя итераторами.
+//sort: Сортирует элементы в контейнере.
+//transform: Применяет функцию к каждому элементу диапазона и записывает результат в другой контейнер.
+//search: Находит первый диапазон элементов, равных заданной последовательности.
+//stable_partition: Разделяет элементы на две группы, сохраняя порядок.
+//unique: Удаляет подряд идущие дублирующиеся элементы.
+//partition: Разделяет элементы на две группы по условию.
+//set_difference: Вычисляет разность двух множеств.
+//for_each: Применяет функцию к каждому элементу диапазона.
 
 
 
@@ -224,620 +32,266 @@ bool canConstructWord(const std::string& word1, const std::string& word2) {
 
 using namespace std;
 
-pair<double, string> calculating_average_score(unordered_map<string, int>& marks) {
-    double middle_ball = 0;
-
-    // Вычисление среднего балла
-    for (const auto& pair : marks) {
-        middle_ball += pair.second;
-    }
-    middle_ball /= marks.size();
-
-    // Определение академического статуса
-    string status;
-    if (middle_ball >= 90) {
-        status = "Отличник";
-    } else if (middle_ball >= 70) {
-        status = "Хорошист";
-    } else if (middle_ball >= 50) {
-        status = "Удовлетворительно";
-    } else {
-        status = "Неудовлетворительно";
-    }
-
-    return {middle_ball, status};
-}
 
 
-
-
-
-// Структура для хранения предметов и их времени
-struct Subject {
+struct Student {
     string name;
-    int time;
+    int score;
 };
 
-// Функция для планирования расписания
-vector<string> planSchedule(vector<Subject>& subjects, int availableTimePerWeek) {
-    vector<string> schedule;
-
-    // Сортировка предметов по времени в порядке возрастания
-    sort(subjects.begin(), subjects.end(), [](const Subject& a, const Subject& b) {
-        return a.time < b.time;
-    });
-
-    // Добавление предметов в расписание до исчерпания доступного времени
-    int remainingTime = availableTimePerWeek;
-    for (const auto& subject : subjects) {
-        if (remainingTime >= subject.time) {
-            schedule.push_back(subject.name);
-            remainingTime -= subject.time;
-        }
-    }
-
-    return schedule;
-}
+struct FailedStudent {
+    string name;
+    string reason;
+};
 
 
-
-
-
-// Функция для построения префикс-функции (массив lps)
-void computeLPSArray(const string& pattern, vector<int>& lps) {
-    int length = 0;
-    lps[0] = 0; // lps[0] всегда равно 0
-
-    int i = 1;
-    while (i < pattern.length()) {
-        if (pattern[i] == pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
-        } else {
-            if (length != 0) {
-                length = lps[length - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
-    }
-}
-
-// Функция для поиска подстроки с использованием KMP алгоритма
-void KMPsearch(const string& text, const string& pattern) {
-    int M = pattern.length();
-    int N = text.length();
-
-    vector<int> lps(M);
-
-    // Построение lps массива
-    computeLPSArray(pattern, lps);
-
-    int i = 0; // индекс для text[]
-    int j = 0; // индекс для pattern[]
-    while (i < N) {
-        if (pattern[j] == text[i]) {
-            j++;
-            i++;
-        }
-
-        if (j == M) {
-            cout << "Pattern found at index " << i - j << endl;
-            j = lps[j - 1];
-        } else if (i < N && pattern[j] != text[i]) {
-            if (j != 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
-        }
-    }
-}
-
-
-
-
-
-//Жадный продавец
-
-
-vector<int> getChange(int amount, const vector<int>& denominations) {
+// (2) Задача жадного продавца
+vector<int> make_change(int amount, const vector<int>& coins) {
     vector<int> change;
+    int remaining = amount;
 
-    for (int coin : denominations) {
-        while (amount >= coin) {
-            amount -= coin;
+    // Сортируем монеты по убыванию для жадного алгоритма
+    vector<int> sorted_coins = coins;
+    sort(sorted_coins.begin(), sorted_coins.end(), greater<int>()); // для сортировки по убыванию
+
+    // Жадный алгоритм для выдачи сдачи
+    for (int coin : sorted_coins) {
+        while (remaining >= coin) {
             change.push_back(coin);
+            remaining -= coin;
         }
     }
 
     return change;
 }
 
+// (3) Хогвартс и совы
 
-
-// Структура для хранения предметов
-struct Item {
-    int weight;
-    int value;
-};
-
-// Функция для нахождения максимальной ценности рюкзака
-int knapsack(int maxWeight, const vector<Item>& items) {
-    int n = items.size();
-    vector<vector<int>> dp(n + 1, vector<int>(maxWeight + 1, 0));
-
-    for (int i = 1; i <= n; ++i) {
-        for (int w = 0; w <= maxWeight; ++w) {
-            if (items[i - 1].weight <= w) {
-                dp[i][w] = max(dp[i - 1][w], dp[i - 1][w - items[i - 1].weight] + items[i - 1].value);
-            } else {
-                dp[i][w] = dp[i - 1][w];
-            }
-        }
-    }
-
-    return dp[n][maxWeight];
+bool can_deliver_all_letters(const vector<int>& letters, const vector<int>& owls) {
+    // Проверим, сможет ли каждая сова доставить все письма на свой факультет
+    return equal(letters.begin(), letters.end(), owls.begin(), [](int l, int o) {
+        return o >= l;
+    }); //equal проверяет, равны ли два диапазона.(писем и сов)
 }
 
 
-
-// Функция для нахождения максимального количества групп, которые могут разместиться
-int maxGroupsThatCanBeSeated(vector<int>& tableCapacities, vector<int>& groupSizes) {
-    sort(tableCapacities.begin(), tableCapacities.end());
-    sort(groupSizes.begin(), groupSizes.end());
-
-    int i = 0, j = 0;
-    int count = 0;
-
-    while (i < tableCapacities.size() && j < groupSizes.size()) {
-        if (tableCapacities[i] >= groupSizes[j]) {
-            count++;
-            i++;
-            j++;
-        } else {
-            i++;
-        }
+// (4) Функция для проверки, являются ли два вектора перестановками друг друга
+bool are_permutations(const vector<int>& vec1, const vector<int>& vec2) {
+    if (vec1.size() != vec2.size()) {
+        cout << "Векторы не могут быть перестановками друг друга, размеры не совпадают!\n";
+        return false;// Если размеры векторов не совпадают, они не могут быть перестановками друг друга
     }
 
+    // Создаем копии векторов для сортировки
+    vector<int> sorted_vec1 = vec1;
+    vector<int> sorted_vec2 = vec2;
+
+    // Сортируем оба вектора
+    sort(sorted_vec1.begin(), sorted_vec1.end());
+    sort(sorted_vec2.begin(), sorted_vec2.end());
+    
+    //проверить, содержат ли они одинаковые элементы в одинаковом количестве. Это можно сделать, используя сортировку и сравнение отсортированных векторов.
+
+    // Если отсортированные векторы равны, то исходные векторы являются перестановками друг друга
+    return sorted_vec1 == sorted_vec2;
+}
+
+// (5) Количество вхождений подстроки в строку
+
+int countSubstringOccurrences(const string& str, const string& substr) {
+    int count = 0;
+    auto it = str.begin();
+    while (true) {
+        it = search(it, str.end(), substr.begin(), substr.end());
+        if (it == str.end()) {
+            break;
+        }
+        count++;
+        it++;
+    }
     return count;
 }
 
+// (6) можно ли из букв первого слова составить второе
+bool can_form_word(const string& first, const string& second) {
+    // Создаем копии строк для обработки
+    string first_copy = first;
+    string second_copy = second;
 
+    // Сортируем символы в обеих строках
+    sort(first_copy.begin(), first_copy.end());
+    sort(second_copy.begin(), second_copy.end());
 
-
-// Структура для хранения заказов
-struct Order {
-    int requestTime;
-    int deliveryTime;
-};
-
-// Функция для сравнения заказов по времени доставки
-bool compareOrders(const Order& a, const Order& b) {
-    return a.deliveryTime < b.deliveryTime;
-}
-
-// Функция для нахождения максимального количества заказов, которые можно доставить в срок
-int maxOrdersDelivered(vector<Order>& orders) {
-    sort(orders.begin(), orders.end(), compareOrders);
-
-    int count = 0;
-    int currentTime = 0;
-
-    for (const auto& order : orders) {
-        if (order.requestTime >= currentTime) {
-            count++;
-            currentTime = order.deliveryTime;
-        }
-    }
-
-    return count;
+    // Проверяем, можно ли из букв первого слова составить второе слово
+    return includes(first_copy.begin(), first_copy.end(), second_copy.begin(), second_copy.end());
+    
+    //includes проверяет, содержится ли второй отсортированный диапазон (вторая строка) внутри первого отсортированного диапазона (первая строка).
 }
 
 
+// (8) Если хотя бы один элемент вектора делится по заданому модулю без остатка, то все элементы вектора выводятся в кавдрате
+void squareElements(vector<int>& vec) {
+    transform(vec.begin(), vec.end(), vec.begin(), [](int num) {
+        return num * num;
+    });
+}
 
-// Функция для сжатия строки
+
+// (10) Если хотя бы из одного элемента вектора можно извлечь квалрат, то все элементы вектора реверсятся
+bool hasPerfectSquare(const vector<int>& nums) {
+    return any_of(nums.begin(), nums.end(), [](int n) {
+        int root = static_cast<int>(sqrt(n));
+        return root * root == n;
+    });
+}
+
+// (13) Сжатие строки
 string compressString(const string& str) {
-    if (str.empty()) {
-        return str;
+    // Удаление последовательных повторяющихся символов
+    string compressed = str;
+    auto it = unique(compressed.begin(), compressed.end()); // unique переставляет повторяющиеся элементы в конец строки
+    compressed.erase(it, compressed.end()); // метод erase удаляет все элементы, начиная с этого итератора до конца строки.
+
+    // Подсчет количества повторений для каждого символа
+    string result;
+    for (char ch : compressed) {
+        int count = std::count(str.begin(), str.end(), ch);
+        result += ch + to_string(count);
     }
 
-    string compressed = "";
-    int countConsecutive = 0;
-
-    for (size_t i = 0; i < str.length(); ++i) {
-        countConsecutive++;
-
-        // Если следующий символ отличается от текущего или это конец строки, добавляем текущий символ и его количество
-        if (i + 1 >= str.length() || str[i] != str[i + 1]) {
-            compressed += str[i];
-            compressed += to_string(countConsecutive);
-            countConsecutive = 0;
-        }
-    }
-
-    // Возвращаем либо сжатую строку, либо исходную, если сжатая не короче
-    return compressed.length() < str.length() ? compressed : str;
-}
-
-
-
-
-// Функция для проверки, является ли число простым
-bool isPrime(int num) {
-    if (num <= 1) return false;
-    if (num <= 3) return true;
-    if (num % 2 == 0 || num % 3 == 0) return false;
-    for (int i = 5; i * i <= num; i += 6) {
-        if (num % i == 0 || num % (i + 2) == 0) return false;
-    }
-    return true;
-}
-
-// Функция для фильтрации массива по простым числам
-vector<int> filterPrimes(const vector<int>& arr) {
-    vector<int> result;
-    for (int num : arr) {
-        if (isPrime(abs(num))) {
-            result.push_back(num);
-        }
-    }
     return result;
 }
 
 
-// Функция для вычисления количества битов, необходимых для представления числа
-int numberOfBits(int number) {
-    if (number == 0) return 1;
-    return floor(log2(number)) + 1;
-}
+// (16) Переместить все четные числа в конец вектора, сохраняя их порядок.
+void moveEvenNumbersToEnd(vector<int>& nums) {
+    stable_partition(nums.begin(), nums.end(), [](int num) {
+        //все элементы, для которых предикат возвращает false (которые нечетные), перемещаются в начало вектора.
 
-// Функция для вычисления суммарного количества битов для представления массива чисел
-int totalBits(const vector<int>& numbers) {
-    int total = 0;
-    for (int number : numbers) {
-        total += numberOfBits(number);
-    }
-    return total;
+        return num % 2 != 0;
+    });
 }
 
 
+
+// (18) Разделить вектор на два, один содержащий положительные элементы, а другой — отрицательные.
+pair<vector<int>, vector<int>> divideVector(const vector<int>& vec) {
+    vector<int> positiveVec;
+    vector<int> negativeVec;
+
+    // Используем partition_copy для разделения элементов
+    partition_copy(vec.begin(), vec.end(), back_inserter(positiveVec), back_inserter(negativeVec),
+                        [](int i) { return i >= 0; }); // копирует элементы, которые удовлетворяют предикату(больше или равны нулю) в положительные, те что не удовлетворяют идут в отрицательные
+
+    return make_pair(positiveVec, negativeVec);
+}
+
+// Фейсконтроль
+struct Visitor {
+    string name;
+    int age;
+    bool is_vip;
+};
+
+struct RejectedVisitor {
+    string name;
+    string reason;
+};
 
 
 int main() {
     int choice;
     
-    std::cout << "Выберите действие:\n";
-    std::cout << "1. Найти числа в диапазоне, которые являются суммой кубов своих цифр\n";
-    std::cout << "2. Проверить, является ли строка палиндромом\n"; //  ТЕСТИРОВАТЬ!
-    std::cout << "3. Проверить, можно ли разделить число на три тройки чисел, сумма которых равна N\n";
-    std::cout << "4. Найти длину наибольшей возрастающей подпоследовательности в массиве\n";
-    std::cout << "5. Найти числа в массиве, которые делятся на заданный делитель\n";
-    std::cout << "6. Найти тройки чисел Пифагора для n \n";
-    std::cout << "7. Найти комбинации чисел, сумма которых равна целевой сумме \n";
-    std::cout << "8. Возвращает все слова, которые можно составить из введеных букв и существуют в словаре.\n";
-    std::cout << "9. Являются ли массивы перестановками друг друга\n";
-    std::cout << "10. Можно ли из букв первого слова составить второе слово\n";
-    std::cout << "11. Расчет среднего балла студента\n";
-    std::cout << "12. Подбор оптимального времени для студента\n";
-    std::cout << "13. Поиск подстроки (Алгоритм Кнута-Морриса-Пратта)\n";
-    std::cout << "14. Алгоритм для жадного продавца\n";
-    std::cout << "15. Задача о рюкзаке (Максимальная ценность, которую можно поместить в рюкзак)\n";
-    std::cout << "16. Задача о распределении мест в ресторане\n";
-    std::cout << "17. Оптимизация доставки пиццы\n";
-    std::cout << "18. Сжатие строки\n";
-    std::cout << "19. Вывод всех простых чисел из заданого массива\n";
-    std::cout << "20. Минимизация количества битов для представления чисел\n";
+    cout << "Выберите задачу:\n";
+    cout << "1. Студенты и экзамен\n";
+    cout << "2. Задача жадного продавца\n";
+    cout << "3. Задача про Хогвартс и сов\n";
+    cout << "4. Являются ли векторы перестановками друг друга\n";
+    cout << "5. Найти количество вхождений подстроки в строку\n";
+    cout << "6. Можно ли из букв первого слова составить второе слово\n";
+    cout << "7. Нахождение количества уникальных чисел в векторе\n";
+    cout << "8. Если хотя бы один элемент вектора делится по заданному модулю без остатка, то все элементы вектора выводятся в квадрате\n";
+    cout << "9. Ротация вектора на K элементов\n";
+    cout << "10. Если хотя бы из одного элемента вектора можно извлечь квадрат, то все элементы вектора переворачиваются\n";
+    cout << "11. Нахождение разности двух множеств\n";
+    cout << "12. Каждые три элемента вектора складываются в число и конвертируются в символ ASCII\n";
+    cout << "13. Сжатие строки\n";
+    cout << "14. Анализ пробега автомобиля\n";
+    cout << "15. Фейсконтроль\n";
+    cout << "16. Переместить все четные числа в конец вектора, сохраняя их порядок\n";
+    cout << "17. Найти сумму квадратов элементов вектора\n";
+    cout << "18. Разделить вектор на два, один содержащий положительные элементы, а другой — отрицательные.\n";
+    cout << "19. Строка, которая содержит два или более одинаковых символов переворачивается\n";
+    cout << "20. Заменить все четные числа в векторе на их квадраты\n";
 
+
+    cout << "Ваш выбор: ";
+    cin >> choice;
     
-
-
-    std::cout << "Ваш выбор: ";
-    std::cin >> choice;
+    cin.ignore();
     
-    std::cin.ignore();
+   
     
     switch (choice) {
         case 1: {
-            int start, end;
-            std::cout << "Введите начало диапазона: ";
-            std::cin >> start;
-            std::cout << "Введите конец диапазона: ";
-            std::cin >> end;
-            
-            std::vector<int> numbers = findSumOfCubesInRange(start, end);
-            
-            std::cout << "Числа в диапазоне [" << start << ", " << end << "], которые можно представить в виде суммы кубов своих цифр: ";
-            for (int num : numbers) {
-                std::cout << num << " ";
-            }
-            std::cout << std::endl;
+            int n;
+                cout << "Введите количество студентов: ";
+                cin >> n;
+                
+                vector<Student> students(n);
+                
+                cout << "Введите имя и оценку каждого студента:" << endl;
+                for (int i = 0; i < n; ++i) {
+                    cin >> students[i].name >> students[i].score;
+                }
+                
+                // Разделяем студентов на сдавших и не сдавших экзамен
+                auto it = partition(students.begin(), students.end(), [](const Student& s) {
+                    return s.score >= 50;
+                });
+                
+                vector<Student> passed_students(students.begin(), it);
+                vector<Student> failed_students(it, students.end());
+                
+                vector<FailedStudent> detailed_failed_students;
+                
+                // Формируем список не сдавших с указанием причины
+                transform(failed_students.begin(), failed_students.end(), back_inserter(detailed_failed_students), [](const Student& s) {
+                    return FailedStudent{s.name, "недостаточный балл"};
+                });
+                
+                
+                cout << "Сдавшие экзамен:" << endl;
+                for_each(passed_students.begin(), passed_students.end(), [](const Student& s) {
+                    cout << s.name;
+                    if (s.score >= 85) {
+                        cout << " - отлично";
+                    }
+                    cout << endl;
+                });
+                
+                cout << endl << "Провалившие экзамен:" << endl;
+                for_each(detailed_failed_students.begin(), detailed_failed_students.end(), [](const FailedStudent& s) {
+                    cout << s.name << " - " << s.reason << endl;
+                });
+
+                return 0;
             break;
         }
         case 2: {
-            std::cin.ignore(); // очищаем буфер ввода перед считыванием строки
-            std::string input;
-            std::cout << "Введите строку: ";
-            std::getline(std::cin, input);
-            
-            if (isPalindrome(input)) {
-                std::cout << "Строка является палиндромом.\n";
-            } else {
-                std::cout << "Строка не является палиндромом.\n";
-            }
-            break;
-        }
-        case 3: {
-            int N;
-            std::cout << "Введите число N: ";
-            std::cin >> N;
-            
-            if (canDivideIntoThreeTriplets(N)) {
-                std::cout << "Число можно разделить на три тройки чисел, сумма которых равна " << N << ".\n";
-            } else {
-                std::cout << "Число нельзя разделить на три тройки чисел, сумма которых равна " << N << ".\n";
-            }
-            break;
-        }
-        case 4: {
-            std::cin.ignore(); // очищаем буфер ввода перед считыванием строки
-            std::vector<int> nums;
-            std::string input;
-            std::cout << "Введите массив чисел, разделенных пробелом: ";
-            std::getline(std::cin, input);
-            std::istringstream iss(input);
-            int num;
-            while (iss >> num) {
-                nums.push_back(num);
-            }
-            
-            int length = lengthOfLIS(nums);
-            
-            std::cout << "Длина наибольшей возрастающей подпоследовательности: " << length << std::endl;
-            break;
-        }
-        case 5: {
-            std::cin.ignore(); // очищаем буфер ввода перед считыванием строки
-            std::vector<int> nums;
-            int divisor;
-            std::string input;
-            std::cout << "Введите массив чисел, разделенных пробелом: ";
-            std::getline(std::cin, input);
-            std::istringstream iss(input);
-            int num;
-            while (iss >> num) {
-                nums.push_back(num);
-            }
-            
-            std::cout << "Введите делитель: ";
-            std::cin >> divisor;
-            
-            std::vector<int> result = divideArray(nums, divisor);
-            
-            std::cout << "Числа в массиве, которые делятся на " << divisor << ": ";
-            for (int num : result) {
-                std::cout << num << " ";
-            }
-            std::cout << std::endl;
-            break;
-        }
-        case 6: {
-            int n;
-            std::cout << "Введите число n: ";
-            std::cin >> n;
-            
-            std::vector<std::vector<int>> triplets = findPythagoreanTriplets(n);
-            
-            std::cout << "Тройки чисел (a, b, c), удовлетворяющие a^2 + b^2 = c^2 и c <= " << n << ":\n";
-            for (const auto& triplet : triplets) {
-                std::cout << "(" << triplet[0] << ", " << triplet[1] << ", " << triplet[2] << ")\n";
-            }
-            break;
-        }
-        case 7: { // Добавленный вариант выбора
-            int n;
-            std::cout << "Введите количество чисел: ";
-            std::cin >> n;
-            
-            std::vector<int> nums(n);
-            std::cout << "Введите числа: ";
-            for (int i = 0; i < n; ++i) {
-                std::cin >> nums[i];
-            }
-            
-            int target;
-            std::cout << "Введите целевую сумму: ";
-            std::cin >> target;
-            
-            std::vector<std::vector<int>> combinations = combinationSum(nums, target);
-            
-            std::cout << "Комбинации чисел, сумма которых равна " << target << ":\n";
-            for (const auto& combination : combinations) {
-                std::cout << "(";
-                for (size_t i = 0; i < combination.size(); ++i) {
-                    std::cout << combination[i];
-                    if (i != combination.size() - 1) {
-                        std::cout << ", ";
-                    }
-                }
-                std::cout << ")\n";
-            }
-            break;
-        }
-        case 8:{
-            // Считываем словарь из файла
-                std::unordered_set<std::string> dictionary;
-                std::ifstream file("/Users/ivanmerzov/Desktop/PRACTICE3/PRACTICE3/ditionary.txt");
-                if (file.is_open()) {
-                    std::string word;
-                    while (std::getline(file, word)) {
-                        dictionary.insert(word);
-                    }
-                    file.close();
-                } else {
-                    std::cerr << "Не удалось открыть файл словаря.\n";
-                    return 1;
-                }
-                
-                // Ввод букв с клавиатуры
-                std::vector<char> letters;
-                std::string input;
-                std::cout << "Введите буквы, разделенные пробелом: ";
-                std::cin.ignore();
-                std::getline(std::cin, input);
-                std::istringstream iss(input);
-                char letter;
-                while (iss >> letter) {
-                    letters.push_back(letter);
-                }
-                
-                // Поиск слов
-                std::vector<std::string> validWords = findWordsFromLetters(letters, dictionary);
-                
-                std::cout << "Слова, которые можно составить из введенных букв и существуют в словаре:\n";
-                for (const auto& word : validWords) {
-                    std::cout << word << std::endl;
-                }
-                
-                return 0;
-            
-            
-            break;
-        }
-            
-        case 9:{
-            
-            int n;
-                std::cout << "Введите размер массивов: ";
-                std::cin >> n;
+            // Набор доступных монет
+                vector<int> coins = {1, 5, 10, 25, 50, 100, 150, 300, 500};
 
-                std::vector<int> arr1(n);
-                std::vector<int> arr2(n);
-
-                std::cout << "Введите элементы первого массива: ";
-                for (int i = 0; i < n; ++i) {
-                    std::cin >> arr1[i];
-                }
-
-                std::cout << "Введите элементы второго массива: ";
-                for (int i = 0; i < n; ++i) {
-                    std::cin >> arr2[i];
-                }
-
-                if (arePermutations(arr1, arr2)) {
-                    std::cout << "Массивы являются перестановками друг друга.\n";
-                } else {
-                    std::cout << "Массивы не являются перестановками друг друга.\n";
-                }
-
-                return 0;
-            
-            break;
-        }
-        case 10:{
-            std::string word1, word2;
-               
-               // Ввод двух слов с клавиатуры
-               std::cout << "Введите первое слово: ";
-               std::cin >> word1;
-               std::cout << "Введите второе слово: ";
-               std::cin >> word2;
-               
-               // Проверка, можно ли из букв первого слова составить второе слово
-               if (canConstructWord(word1, word2)) {
-                   std::cout << "Из букв первого слова можно составить второе слово.\n";
-               } else {
-                   std::cout << "Из букв первого слова нельзя составить второе слово.\n";
-               }
-               
-               return 0;
-            break;
-        }
-        case 11:{
-            unordered_map<string, int> marks;
-            int subjects;
-            cout << "Введите количество предметов: ";
-            cin >> subjects;
-
-            // Ввод оценок для каждого предмета
-            for (int i = 0; i < subjects; ++i) {
-                string subject;
-                int mark;
-                cout << "Введите название предмета " << i + 1 << ": ";
-                cin >> subject;
-                cout << "Введите балл по предмету " << subject << ": ";
-                cin >> mark;
-                marks[subject] = mark;
-            }
-
-            auto [middle_ball, status] = calculating_average_score(marks);
-            cout << "Средний балл: " << middle_ball << endl;
-            cout << "Академический статус: " << status << endl;
-
-            return 0;
-            break;
-        }
-        case 12:{
-            vector<Subject> subjects;
-              int numberOfSubjects;
-              int availableTimePerWeek;
-
-              cout << "Введите количество предметов: ";
-              cin >> numberOfSubjects;
-
-              // Ввод предметов и их времени
-              for (int i = 0; i < numberOfSubjects; ++i) {
-                  Subject subject;
-                  cout << "Введите название предмета " << i + 1 << ": ";
-                  cin >> subject.name;
-                  cout << "Введите время на предмет " << subject.name << " в часах: ";
-                  cin >> subject.time;
-                  subjects.push_back(subject);
-              }
-
-              cout << "Введите доступное время в неделю: ";
-              cin >> availableTimePerWeek;
-
-              // Планирование расписания
-              vector<string> optimalSchedule = planSchedule(subjects, availableTimePerWeek);
-
-              // Вывод результата
-              cout << "Оптимальное расписание:" << endl;
-              for (const auto& subject : optimalSchedule) {
-                  cout << subject << endl;
-              }
-
-              return 0;
-            break;
-        }
-        case 13:{
-            string text;
-               string pattern;
-
-               cout << "Введите текст: ";
-               cin >> text;
-
-               cout << "Введите подстроку для поиска: ";
-               cin >> pattern;
-
-               KMPsearch(text, pattern);
-
-               return 0;
-        }
-        case 14:{
-            int amount;
-                cout << "Введите сумму сдачи: ";
+                // Ввод суммы для выдачи сдачи
+                int amount;
+                cout << "Введите сумму для выдачи сдачи: ";
                 cin >> amount;
 
-                // Номиналы монет
-                vector<int> denominations = {50, 20, 10, 5, 2, 1};
+                // Получение сдачи
+                vector<int> change = make_change(amount, coins);
 
-                vector<int> change = getChange(amount, denominations);
-
-                cout << "Необходимое количество монет: " << change.size() << endl;
-                cout << "Монеты: ";
+                // Вывод результата
+                cout << "Сдача для " << amount << ": ";
                 for (int coin : change) {
                     cout << coin << " ";
                 }
@@ -846,102 +300,160 @@ int main() {
                 return 0;
             break;
         }
-        case 15:{
-            int maxWeight;
-                int numItems;
+        case 3:{
+            
+            cout << "\n";
 
-                cout << "Введите максимальный вес рюкзака: ";
-                cin >> maxWeight;
+            cout << "Есть четыре факультета в Хогвартсе, каждому из которых нужно доставить определённое количество писем. Каждый факультет получает письма от одной совы. Нужно проверить, может ли каждая сова доставить все письма на свой факультет.\n";
+            cout << "\n";
 
-                cout << "Введите количество предметов: ";
-                cin >> numItems;
+            
+            vector<int> letters(4);
+            vector<int> owls(4);
 
-                vector<Item> items(numItems);
-                cout << "Введите вес и ценность каждого предмета:" << endl;
-                for (int i = 0; i < numItems; ++i) {
-                    cin >> items[i].weight >> items[i].value;
+            cout << "Введите количество писем для каждого факультета (4 числа): ";
+                for (int i = 0; i < 4; ++i) {
+                    cin >> letters[i];
                 }
 
-                int maxValue = knapsack(maxWeight, items);
-                cout << "Максимальная ценность, которую можно поместить в рюкзак: " << maxValue << endl;
+            cout << "Введите количество писем, которые может доставить каждая сова (4 числа): ";
+                for (int i = 0; i < 4; ++i) {
+                    cin >> owls[i];
+                }
+
+                if (can_deliver_all_letters(letters, owls)) {
+                    std:: cout << "Каждая сова может доставить все письма." << endl;
+                } else {
+                    cout << "Не каждая сова может доставить все письма." << endl;
+                }
+
+                return 0;
+            
+            break;
+        }
+        case 4:{
+                cout << "Введите размер первого вектора: ";
+                int size1;
+                cin >> size1;
+                vector<int> vec1(size1);
+                cout << "Введите элементы первого вектора: ";
+                for (int i = 0; i < size1; ++i) {
+                    cin >> vec1[i];
+                }
+
+               
+                cout << "Введите размер второго вектора: ";
+                int size2;
+                cin >> size2;
+                vector<int> vec2(size2);
+                cout << "Введите элементы вторго вектора: ";
+                for (int i = 0; i < size2; ++i) {
+                    cin >> vec2[i];
+                }
+
+                // Проверка, являются ли векторы перестановками друг друга
+                if (are_permutations(vec1, vec2)) {
+                    cout << "Векторы перестановки друг друга.\n";
+                } else {
+                    cout << "Векторы не являются перестановками друг друга.\n";
+                }
 
                 return 0;
             break;
         }
-        case 16:{
-            int numTables, numGroups;
+        case 5:{
+            string s, sub;
+                cout << "Введите строку s: ";
+                getline(cin, s);
+                cout << "Введите подстроку sub: ";
+                getline(cin, sub);
 
-                cout << "Введите количество столиков: ";
-                cin >> numTables;
-
-                vector<int> tableCapacities(numTables);
-                cout << "Введите вместимость каждого столика: ";
-                for (int i = 0; i < numTables; ++i) {
-                    cin >> tableCapacities[i];
-                }
-
-                cout << "Введите количество групп гостей: ";
-                cin >> numGroups;
-
-                vector<int> groupSizes(numGroups);
-                cout << "Введите размер каждой группы: ";
-                for (int i = 0; i < numGroups; ++i) {
-                    cin >> groupSizes[i];
-                }
-
-                int maxGroups = maxGroupsThatCanBeSeated(tableCapacities, groupSizes);
-                cout << "Максимальное количество групп, которые могут разместиться: " << maxGroups << endl;
+                int occurrences = countSubstringOccurrences(s, sub);
+                cout << "Количество вхождений подстроки в строку: " << occurrences << endl;
 
                 return 0;
             break;
         }
-        case 17:{
-            int numOrders;
-               cout << "Введите количество заказов: ";
-               cin >> numOrders;
+        case 6:{
+            string first, second;
+                cout << "Введите первое слово: ";
+                cin >> first;
+                cout << "Введите второе слово: ";
+                cin >> second;
 
-               vector<Order> orders(numOrders);
-               cout << "Введите время подачи заявки и желаемое время доставки для каждого заказа:" << endl;
-               for (int i = 0; i < numOrders; ++i) {
-                   cin >> orders[i].requestTime >> orders[i].deliveryTime;
+                // Проверяем, можно ли из букв первого слова составить второе слово
+                if (can_form_word(first, second)) {
+                    cout << "Из букв первого слова возможно составить второе.\n";
+                } else {
+                    cout << "Из букв первого слова невозможно составить второе.\n";
+                }
+
+                return 0;
+            break;
+        }
+        case 7:{
+            int n;
+               cout << "Введите количество элементов: ";
+               cin >> n;
+
+               vector<int> nums;
+               cout << "Введите элементы:\n";
+               for (int i = 0; i < n; ++i) {
+                   int num;
+                   cin >> num;
+                   nums.push_back(num);
                }
 
-               int result = maxOrdersDelivered(orders);
-               cout << "Максимальное количество доставленных заказов в срок: " << result << endl;
+               // Упорядочим введенные числа для удобства
+               sort(nums.begin(), nums.end());
+            // после сортировки все одинаковые элементы будут раядом, что позволит unique эффективнее удалять дубликаты
+
+               // Используем алгоритм unique для удаления дубликатов
+               auto last = unique(nums.begin(), nums.end());
+
+               // Вычислим количество уникальных чисел
+               int unique_count = distance(nums.begin(), last);
+
+               // Выведем результат
+               cout << "Количество уникальных элементов: " << unique_count << endl;
 
                return 0;
             break;
         }
-        case 18:{
-            string input;
-               cout << "Введите строку: ";
-               getline(cin, input);
-            
+        case 8:{
+            vector<int> vec;
+                int size;
+                cout << "Введите размер вектора: ";
+                cin >> size;
 
-               string compressed = compressString(input);
-               cout << "Сжатая строка: " << compressed << endl;
-
-               return 0;
-            break;
-        }
-        case 19:{
-            // Запрос пользователю ввода массива
-                int n;
-                cout << "Введите количество элементов массива: ";
-                cin >> n;
-
-                vector<int> array(n);
-                cout << "Введите элементы массива: ";
-                for (int i = 0; i < n; ++i) {
-                    cin >> array[i];
+                // Заполнение вектора с клавиатуры
+                cout << "Введите элементы вектора: ";
+                for (int i = 0; i < size; ++i) {
+                    int num;
+                    cin >> num;
+                    vec.push_back(num);
                 }
 
-                // Вызов функции для фильтрации массива
-                vector<int> primes = filterPrimes(array);
+                int modulo;
+                cout << "Введите модуль: ";
+                cin >> modulo;
 
-                // Вывод отфильтрованного массива
-                cout << "Простые числа из введенного массива: ";
-                for (int num : primes) {
+                // Проверяем, есть ли хотя бы один элемент, который делится на заданный модуль без остатка
+                bool divisibleByModulo = any_of(vec.begin(), vec.end(), [modulo](int num) {
+                    return num % modulo == 0;
+                });
+
+                // Если есть, возводим все элементы в квадрат
+                if (divisibleByModulo) {
+                    squareElements(vec);
+                    cout << "Все элементы вектора были возведены в квадрат." << endl;
+                } else {
+                    cout << "Нет элемента вектора, который делится на " << modulo << " без остатка." << endl;
+                }
+
+                // Выводим результаты
+                cout << "Итоговый вектор: ";
+                for (int num : vec) {
                     cout << num << " ";
                 }
                 cout << endl;
@@ -949,25 +461,374 @@ int main() {
                 return 0;
             break;
         }
-        case 20:{
-            int n;
-               cout << "Введите количество чисел в массиве: ";
+            
+        case 9:{
+            int n, k;
+               cout << "Введите количество элементов: ";
                cin >> n;
 
-               vector<int> numbers(n);
-               cout << "Введите числа: ";
+               vector<int> nums(n);
+               cout << "Введите элементы:\n";
                for (int i = 0; i < n; ++i) {
-                   cin >> numbers[i];
+                   cin >> nums[i];
                }
 
-               int result = totalBits(numbers);
-               cout << "Суммарное минимальное количество битов для представления всех чисел: " << result << endl;
+               cout << "Введите количество позиций для ротации: ";
+               cin >> k;
+
+               k = k % n; // убедиться, что k находится в пределах размера массива
+               rotate(nums.begin(), nums.begin() + k, nums.end());
+
+            //rotate - выполняет циклическую ротацию вектора.
+               cout << "Вектор после ротации: ";
+               for (int num : nums) {
+                   cout << num << " ";
+               }
+               cout << endl;
 
                return 0;
             break;
         }
+        case 10:{
+            vector<int> nums;
+                int n, value;
+
+                cout << "Введите количество элементов вектора: ";
+                cin >> n;
+
+                cout << "Введите элементы вектора: ";
+                for (int i = 0; i < n; ++i) {
+                    cin >> value;
+                    nums.push_back(value);
+                }
+
+                // Проверяем, можно ли извлечь квадратный корень без остатка хотя бы из одного элемента
+                if (hasPerfectSquare(nums)) {
+                    // Если можно, реверсируем все элементы вектора
+                    reverse(nums.begin(), nums.end());
+                }
+
+                // Выводим результат
+                cout << "Результат: ";
+                for (const auto& num : nums) {
+                    cout << num << " ";
+                }
+                cout << endl;
+
+                return 0;
+            break;
+        }
+        case 11:{
+            // Первое множество
+               int n1;
+               cout << "Введите размер первого множества: ";
+               cin >> n1;
+
+               vector<int> set1(n1);
+               cout << "Введите элементы первого множества: ";
+               for (int i = 0; i < n1; ++i) {
+                   cin >> set1[i];
+               }
+
+               // Второе множество
+               int n2;
+               cout << "Введите размер второго множества: ";
+               cin >> n2;
+
+               vector<int> set2(n2);
+               cout << "Введите элементы второго множества: ";
+               for (int i = 0; i < n2; ++i) {
+                   cin >> set2[i];
+               }
+
+               // Результирующий вектор для разности множеств
+               vector<int> difference;
+
+               // Сортировка обоих множеств перед применением set_difference
+               sort(set1.begin(), set1.end());
+               sort(set2.begin(), set2.end());
+
+               // Нахождение разности множеств
+               set_difference(set1.begin(), set1.end(), set2.begin(), set2.end(), back_inserter(difference));
+            //для нахождения разности между двумя множествами set1 и set2.
+
+               // Вывод результата
+               cout << "Разность множеств: ";
+               for (int num : difference) {
+                   cout << num << " ";
+               }
+               cout << endl;
+
+               return 0;
+            break;
+        }
+        case 12:{
+            vector<int> numbers;
+                int input;
+
+                cout << "Введите числа для вектора (-1 для завершения ввода): " << endl;
+                while (cin >> input && input != -1) {
+                    numbers.push_back(input);
+                }
+
+                // Проверка, что размер вектора кратен 3
+                if (numbers.size() % 3 != 0) {
+                    cout << "Размер вектора должен быть кратен 3." << endl;
+                    return 1;
+                }
+
+                // Вектор для хранения символов
+                vector<char> chars;
+
+                // Суммирование трёх элементов и преобразование в символ ASCII
+                for (size_t i = 0; i < numbers.size(); i += 3) {
+                    int sum = numbers[i] + numbers[i + 1] + numbers[i + 2];
+                    chars.push_back(static_cast<char>(sum));
+                }
+
+                
+                cout << "Результирующие символы: ";
+                for_each(chars.begin(), chars.end(), [](char c) {
+                    cout << c << ' ';
+                });
+                cout << endl;
+
+                return 0;
+            break;
+        }
+        case 13:{
+            string str;
+               cout << "Введите строку для сжатия: ";
+               cin >> str;
+
+               string compressed = compressString(str);
+               cout << "Сжатая строка: " << compressed << endl;
+
+               return 0;
+        }
+        case 14:{
+            vector<double> mileages;
+                double input;
+
+                
+                cout << "Введите пробеги такси (введите -1 для завершения ввода): " << endl;
+                while (cin >> input && input != -1) {
+                    mileages.push_back(input);
+                }
+
+                // Проверка, что список не пуст
+                if (mileages.empty()) {
+                    cout << "Список пробегов такси пуст." << endl;
+                    return 1;
+                }
+
+                // Вычисление среднего пробега
+                double total_mileage = 0;
+                for_each(mileages.begin(), mileages.end(), [&](double mileage) {
+                    total_mileage += mileage;
+                });
+                double average_mileage = total_mileage / mileages.size();
+
+                // Вывод среднего пробега
+                cout << "Средний пробег: " << average_mileage << endl;
+
+                // Вывод пробегов, которые выше среднего
+                cout << "Пробеги, которые выше среднего: ";
+                for_each(mileages.begin(), mileages.end(), [&](double mileage) {
+                    if (mileage > average_mileage) {
+                        cout << mileage << " ";
+                    }
+                });
+                cout << endl;
+
+                return 0;
+            break;
+        }
+        case 15:{
+            int n;
+               cout << "Введите количество посетителей: ";
+               cin >> n;
+
+               vector<Visitor> visitors(n);
+
+               cout << "Введите имя, возраст и VIP-статус (1 для VIP, 0 для обычных) каждого посетителя:" << endl;
+               for (int i = 0; i < n; ++i) {
+                   cin >> visitors[i].name >> visitors[i].age >> visitors[i].is_vip;
+               }
+
+               vector<Visitor> allowed_visitors;
+               vector<RejectedVisitor> rejected_visitors;
+
+               // Используем std::for_each для фильтрации посетителей
+               for_each(visitors.begin(), visitors.end(), [&](const Visitor& v) {
+                   if (v.age >= 18 || v.is_vip) {
+                       allowed_visitors.push_back(v);
+                   } else {
+                       rejected_visitors.push_back({v.name, "недостаточный возраст"});
+                   }
+               });
+
+               cout << "Пропущенные посетители:" << endl;
+               for_each(allowed_visitors.begin(), allowed_visitors.end(), [](const Visitor& v) {
+                   cout << v.name << endl;
+               });
+
+               cout << endl << "Не пропущенные посетители и причины:" << endl;
+               for_each(rejected_visitors.begin(), rejected_visitors.end(), [](const RejectedVisitor& rv) {
+                   cout << rv.name << " - " << rv.reason << endl;
+               });
+
+               return 0;
+            break;
+        }
+        case 16:{
+            int size;
+                cout << "Введите размер вектора: ";
+                cin >> size;
+
+                vector<int> nums(size);
+                cout << "Введите элементы вектора:\n";
+                for (int i = 0; i < size; ++i) {
+                    cin >> nums[i];
+                }
+                
+                cout << "Исходный вектор: ";
+                for (int num : nums) {
+                    cout << num << " ";
+                }
+                cout << endl;
+
+                moveEvenNumbersToEnd(nums);
+
+                cout << "Модифицированный вектор: ";
+                for (int num : nums) {
+                    cout << num << " ";
+                }
+                cout << endl;
+
+                return 0;
+            break;
+        }
+        case 17:{
+            vector<int> vec;
+                int num_elements;
+
+                cout << "Введите количество элементов в векторе: ";
+                cin >> num_elements;
+
+                cout << "Введите элементы вектора: ";
+                for (int i = 0; i < num_elements; ++i) {
+                    int element;
+                    cin >> element;
+                    vec.push_back(element);
+                }
+
+                // Переменная для хранения суммы квадратов элементов
+                int sum_of_squares = 0;
+
+                // Используем алгоритм for_each(выполняет функцию (функтор)) для вычисления суммы квадратов элементов
+                for_each(vec.begin(), vec.end(), [&sum_of_squares](int x) {
+                    sum_of_squares += x * x;
+                });
+
+                cout << "Сумма квадратов элементов вектора: " << sum_of_squares << endl;
+
+                return 0;
+            break;
+        }
+            
+        case 18:{
+            
+                int n;
+                cout << "Введите количество элементов: ";
+                cin >> n;
+
+                
+                vector<int> numbers(n);
+                cout << "Введите элементы: ";
+                for (int i = 0; i < n; ++i) {
+                    cin >> numbers[i];
+                }
+
+                // Разделяем вектор на положительные и отрицательные значения
+                auto dividedVectors = divideVector(numbers);
+
+                // Положительный вектор
+                vector<int> positiveVec = dividedVectors.first;
+                // Отрицательный вектор
+                vector<int> negativeVec = dividedVectors.second;
+
+               
+                cout << "Вектор положительных элементов: ";
+                for (int num : positiveVec) {
+                    cout << num << " ";
+                }
+                cout << endl;
+
+                
+                cout << "Вектор отрицательных элементов: ";
+                for (int num : negativeVec) {
+                    cout << num << " ";
+                }
+                cout << endl;
+
+                return 0;
+            break;
+        }
+        case 19:{
+            string input;
+               cout << "Введите строку: ";
+               getline(cin, input);
+
+               // Проверяем, есть ли символ, встречающийся больше двух раз или два раза
+               bool has_repeating_chars = any_of(input.begin(), input.end(), [&](char c) {
+                   return count(input.begin(), input.end(), c) >= 2;
+               });
+
+               if (has_repeating_chars) {
+                   // Реверсируем строку
+                   reverse(input.begin(), input.end());
+               }
+
+               cout << "Результат: " << input << endl;
+
+               return 0;
+            break;
+        }
+        case 20:{
+            vector<int> vec;
+               int n;
+
+               cout << "Введите количество элементов вектора: ";
+               cin >> n;
+
+               cout << "Введите элементы вектора: ";
+               for (int i = 0; i < n; ++i) {
+                   int element;
+                   cin >> element;
+                   vec.push_back(element);
+               }
+
+               // Используем стандартный алгоритм for_each с лямбда-функцией
+               for_each(vec.begin(), vec.end(), [](int& x) {
+                   if (x % 2 == 0) {
+                       x = x * x;
+                   }
+               });
+
+               // Вывод результата
+               cout << "Обработанный вектор: ";
+               for (const int& x : vec) {
+                   cout << x << " ";
+               }
+            
+            cout << endl;
+               return 0;
+            break;
+        }
+       
         default:
-            std::cout << "Неверный выбор. Попробуйте снова.\n";
+            cout << "Неверный выбор. Попробуйте снова.\n";
             break;
     }
     
