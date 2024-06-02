@@ -2,8 +2,8 @@
 #include <vector>
 #include <algorithm>
 #include <cmath>
-
-
+#include <fstream>
+#include <string>
 
 
 using namespace std;
@@ -22,6 +22,7 @@ struct FailedStudent {
 };
 
 
+
 // (2) Задача жадного продавца
 
 vector<int> make_change(int amount, const vector<int>& coins) {
@@ -30,7 +31,7 @@ vector<int> make_change(int amount, const vector<int>& coins) {
 
     // Сортируем монеты по убыванию для жадного алгоритма
     vector<int> sorted_coins = coins;
-    sort(sorted_coins.begin(), sorted_coins.end(), greater<int>()); // для сортировки по убыванию
+    sort(sorted_coins.begin(), sorted_coins.end(), greater<int>());
 
     // Жадный алгоритм для выдачи сдачи
     for (int coin : sorted_coins) {
@@ -74,21 +75,30 @@ bool are_permutations(const vector<int>& vec1, const vector<int>& vec2) {
     return sorted_vec1 == sorted_vec2;
 }
 
-// (5) Количество вхождений подстроки в строку
-
-int countSubstringOccurrences(const string& str, const string& substr) {
-    int count = 0;
-    auto it = str.begin();
-    while (true) {
-        it = search(it, str.end(), substr.begin(), substr.end());
-        if (it == str.end()) {
-            break;
+// (5) Функция проверки, можно ли составить слово из букв
+bool canFormWord(const std::string& word, std::string letters) {
+    for (char c : word) {
+        auto it = std::find(letters.begin(), letters.end(), c);
+        if (it == letters.end()) {
+            return false;
         }
-        count++;
-        it++;
+        letters.erase(it); // Удалить использованную букву
     }
-    return count;
+    return true;
 }
+
+// Функция загрузки словаря из файла
+std::vector<std::string> loadDictionary(const std::string& filename) {
+    std::vector<std::string> dictionary;
+    std::ifstream file(filename);
+    std::string word;
+    while (file >> word) {
+        dictionary.push_back(word);
+    }
+    return dictionary;
+}
+
+
 
 // (6) можно ли из букв первого слова составить второе
 
@@ -181,12 +191,11 @@ struct RejectedVisitor {
 int main() {
     int choice;
     
-    cout << "Выберите задачу:\n";
     cout << "1. Студенты и экзамен\n";
     cout << "2. Задача жадного продавца\n";
     cout << "3. Задача про Хогвартс и сов\n";
     cout << "4. Являются ли векторы перестановками друг друга\n";
-    cout << "5. Найти количество вхождений подстроки в строку\n";
+    cout << "5. Найти все слова из словаря, которые можно составить из введеных букв\n";
     cout << "6. Можно ли из букв первого слова составить второе слово\n";
     cout << "7. Нахождение количества уникальных чисел в векторе\n";
     cout << "8. Если хотя бы один элемент вектора делится по заданному модулю без остатка, то все элементы вектора выводятся в квадрате\n";
@@ -204,7 +213,7 @@ int main() {
     cout << "20. Заменить все четные числа в векторе на их квадраты\n";
 
 
-    cout << "Ваш выбор: ";
+    cout << "Выбор: ";
     cin >> choice;
     
     cin.ignore();
@@ -259,7 +268,7 @@ int main() {
         }
         case 2: {
             // Набор доступных монет
-                vector<int> coins = {1, 5, 10, 25, 50, 100, 150, 300, 500};
+                vector<int> coins = {1, 10, 25, 50, 100, 300, 500};
 
                 // Ввод суммы для выдачи сдачи
                 int amount;
@@ -341,16 +350,30 @@ int main() {
             break;
         }
         case 5:{
-            string s, sub;
-                cout << "Введите строку s: ";
-                getline(cin, s);
-                cout << "Введите подстроку sub: ";
-                getline(cin, sub);
+            std::string letters;
+               std::cout << "Введите буквы: ";
+               std::cin >> letters;
 
-                int occurrences = countSubstringOccurrences(s, sub);
-                cout << "Количество вхождений подстроки в строку: " << occurrences << endl;
+               // Загрузка словаря
+               std::vector<std::string> dictionary = loadDictionary("/Users/ivanmerzov/Desktop/PRACTICE3.2/PRACTICE3.2/ditionary.txt");
 
-                return 0;
+               // Вектор для хранения подходящих слов
+               std::vector<std::string> validWords;
+
+               // Проверка слов из словаря
+               std::copy_if(dictionary.begin(), dictionary.end(), std::back_inserter(validWords),
+                            [&letters](const std::string& word) { return canFormWord(word, letters); });
+
+               if (validWords.empty()) {
+                   std::cout << "Нет подходящих слов.\n";
+               } else {
+                   std::cout << "Подходящие слова:\n";
+                   for (const auto& word : validWords) {
+                       std::cout << word << '\n';
+                   }
+               }
+
+               return 0;
             break;
         }
         case 6:{
