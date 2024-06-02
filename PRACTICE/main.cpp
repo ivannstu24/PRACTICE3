@@ -6,33 +6,10 @@
 
 
 
-//Итераторы:
-
-//element.begin(): Возвращает итератор на начало контейнера.
-//element.end(): Возвращает итератор на конец контейнера.
-
-//Функции из библиотеки алгоритмов:
-
-//copy_if: Копирует элементы, удовлетворяющие условию, в другой контейнер.
-//any_of: Проверяет, выполняется ли условие хотя бы для одного элемента в контейнере.
-//back_inserter: Возвращает итератор, который вставляет элементы в конец контейнера.
-//distance: Возвращает расстояние между двумя итераторами.
-//sort: Сортирует элементы в контейнере.
-//transform: Применяет функцию к каждому элементу диапазона и записывает результат в другой контейнер.
-//search: Находит первый диапазон элементов, равных заданной последовательности.
-//stable_partition: Разделяет элементы на две группы, сохраняя порядок.
-//unique: Удаляет подряд идущие дублирующиеся элементы.
-//partition: Разделяет элементы на две группы по условию.
-//set_difference: Вычисляет разность двух множеств.
-//for_each: Применяет функцию к каждому элементу диапазона.
-
-
-
-
-
 using namespace std;
 
 
+// (1) Студенты и экзамен
 
 struct Student {
     string name;
@@ -46,6 +23,7 @@ struct FailedStudent {
 
 
 // (2) Задача жадного продавца
+
 vector<int> make_change(int amount, const vector<int>& coins) {
     vector<int> change;
     int remaining = amount;
@@ -71,11 +49,12 @@ bool can_deliver_all_letters(const vector<int>& letters, const vector<int>& owls
     // Проверим, сможет ли каждая сова доставить все письма на свой факультет
     return equal(letters.begin(), letters.end(), owls.begin(), [](int l, int o) {
         return o >= l;
-    }); //equal проверяет, равны ли два диапазона.(писем и сов)
+    });
 }
 
 
 // (4) Функция для проверки, являются ли два вектора перестановками друг друга
+
 bool are_permutations(const vector<int>& vec1, const vector<int>& vec2) {
     if (vec1.size() != vec2.size()) {
         cout << "Векторы не могут быть перестановками друг друга, размеры не совпадают!\n";
@@ -86,11 +65,10 @@ bool are_permutations(const vector<int>& vec1, const vector<int>& vec2) {
     vector<int> sorted_vec1 = vec1;
     vector<int> sorted_vec2 = vec2;
 
-    // Сортируем оба вектора
+    // Сортируем два вектора
     sort(sorted_vec1.begin(), sorted_vec1.end());
     sort(sorted_vec2.begin(), sorted_vec2.end());
     
-    //проверить, содержат ли они одинаковые элементы в одинаковом количестве. Это можно сделать, используя сортировку и сравнение отсортированных векторов.
 
     // Если отсортированные векторы равны, то исходные векторы являются перестановками друг друга
     return sorted_vec1 == sorted_vec2;
@@ -113,6 +91,7 @@ int countSubstringOccurrences(const string& str, const string& substr) {
 }
 
 // (6) можно ли из букв первого слова составить второе
+
 bool can_form_word(const string& first, const string& second) {
     // Создаем копии строк для обработки
     string first_copy = first;
@@ -124,12 +103,11 @@ bool can_form_word(const string& first, const string& second) {
 
     // Проверяем, можно ли из букв первого слова составить второе слово
     return includes(first_copy.begin(), first_copy.end(), second_copy.begin(), second_copy.end());
-    
-    //includes проверяет, содержится ли второй отсортированный диапазон (вторая строка) внутри первого отсортированного диапазона (первая строка).
-}
+    }
 
 
 // (8) Если хотя бы один элемент вектора делится по заданому модулю без остатка, то все элементы вектора выводятся в кавдрате
+
 void squareElements(vector<int>& vec) {
     transform(vec.begin(), vec.end(), vec.begin(), [](int num) {
         return num * num;
@@ -138,6 +116,7 @@ void squareElements(vector<int>& vec) {
 
 
 // (10) Если хотя бы из одного элемента вектора можно извлечь квалрат, то все элементы вектора реверсятся
+
 bool hasPerfectSquare(const vector<int>& nums) {
     return any_of(nums.begin(), nums.end(), [](int n) {
         int root = static_cast<int>(sqrt(n));
@@ -146,11 +125,12 @@ bool hasPerfectSquare(const vector<int>& nums) {
 }
 
 // (13) Сжатие строки
+
 string compressString(const string& str) {
     // Удаление последовательных повторяющихся символов
     string compressed = str;
-    auto it = unique(compressed.begin(), compressed.end()); // unique переставляет повторяющиеся элементы в конец строки
-    compressed.erase(it, compressed.end()); // метод erase удаляет все элементы, начиная с этого итератора до конца строки.
+    auto it = unique(compressed.begin(), compressed.end());
+    compressed.erase(it, compressed.end());
 
     // Подсчет количества повторений для каждого символа
     string result;
@@ -164,9 +144,9 @@ string compressString(const string& str) {
 
 
 // (16) Переместить все четные числа в конец вектора, сохраняя их порядок.
+
 void moveEvenNumbersToEnd(vector<int>& nums) {
     stable_partition(nums.begin(), nums.end(), [](int num) {
-        //все элементы, для которых предикат возвращает false (которые нечетные), перемещаются в начало вектора.
 
         return num % 2 != 0;
     });
@@ -179,9 +159,8 @@ pair<vector<int>, vector<int>> divideVector(const vector<int>& vec) {
     vector<int> positiveVec;
     vector<int> negativeVec;
 
-    // Используем partition_copy для разделения элементов
     partition_copy(vec.begin(), vec.end(), back_inserter(positiveVec), back_inserter(negativeVec),
-                        [](int i) { return i >= 0; }); // копирует элементы, которые удовлетворяют предикату(больше или равны нулю) в положительные, те что не удовлетворяют идут в отрицательные
+                        [](int i) { return i >= 0; }); // копируем элементы, которые удовлетворяют предикату(больше или равны нулю) в положительные, те что не удовлетворяют идут в отрицательные
 
     return make_pair(positiveVec, negativeVec);
 }
@@ -404,17 +383,16 @@ int main() {
                    nums.push_back(num);
                }
 
-               // Упорядочим введенные числа для удобства
+               // сортируем введенные числа для удобства
                sort(nums.begin(), nums.end());
             // после сортировки все одинаковые элементы будут раядом, что позволит unique эффективнее удалять дубликаты
 
-               // Используем алгоритм unique для удаления дубликатов
+               // удаление дубликатов
                auto last = unique(nums.begin(), nums.end());
 
                // Вычислим количество уникальных чисел
                int unique_count = distance(nums.begin(), last);
 
-               // Выведем результат
                cout << "Количество уникальных элементов: " << unique_count << endl;
 
                return 0;
@@ -426,7 +404,6 @@ int main() {
                 cout << "Введите размер вектора: ";
                 cin >> size;
 
-                // Заполнение вектора с клавиатуры
                 cout << "Введите элементы вектора: ";
                 for (int i = 0; i < size; ++i) {
                     int num;
@@ -451,7 +428,6 @@ int main() {
                     cout << "Нет элемента вектора, который делится на " << modulo << " без остатка." << endl;
                 }
 
-                // Выводим результаты
                 cout << "Итоговый вектор: ";
                 for (int num : vec) {
                     cout << num << " ";
@@ -479,7 +455,6 @@ int main() {
                k = k % n; // убедиться, что k находится в пределах размера массива
                rotate(nums.begin(), nums.begin() + k, nums.end());
 
-            //rotate - выполняет циклическую ротацию вектора.
                cout << "Вектор после ротации: ";
                for (int num : nums) {
                    cout << num << " ";
@@ -504,11 +479,9 @@ int main() {
 
                 // Проверяем, можно ли извлечь квадратный корень без остатка хотя бы из одного элемента
                 if (hasPerfectSquare(nums)) {
-                    // Если можно, реверсируем все элементы вектора
                     reverse(nums.begin(), nums.end());
                 }
 
-                // Выводим результат
                 cout << "Результат: ";
                 for (const auto& num : nums) {
                     cout << num << " ";
@@ -544,15 +517,13 @@ int main() {
                // Результирующий вектор для разности множеств
                vector<int> difference;
 
-               // Сортировка обоих множеств перед применением set_difference
                sort(set1.begin(), set1.end());
                sort(set2.begin(), set2.end());
 
                // Нахождение разности множеств
                set_difference(set1.begin(), set1.end(), set2.begin(), set2.end(), back_inserter(difference));
-            //для нахождения разности между двумя множествами set1 и set2.
 
-               // Вывод результата
+            
                cout << "Разность множеств: ";
                for (int num : difference) {
                    cout << num << " ";
@@ -629,10 +600,8 @@ int main() {
                 });
                 double average_mileage = total_mileage / mileages.size();
 
-                // Вывод среднего пробега
                 cout << "Средний пробег: " << average_mileage << endl;
 
-                // Вывод пробегов, которые выше среднего
                 cout << "Пробеги, которые выше среднего: ";
                 for_each(mileages.begin(), mileages.end(), [&](double mileage) {
                     if (mileage > average_mileage) {
@@ -659,7 +628,7 @@ int main() {
                vector<Visitor> allowed_visitors;
                vector<RejectedVisitor> rejected_visitors;
 
-               // Используем std::for_each для фильтрации посетителей
+               // Фильтрация посетителей
                for_each(visitors.begin(), visitors.end(), [&](const Visitor& v) {
                    if (v.age >= 18 || v.is_vip) {
                        allowed_visitors.push_back(v);
@@ -726,7 +695,7 @@ int main() {
                 // Переменная для хранения суммы квадратов элементов
                 int sum_of_squares = 0;
 
-                // Используем алгоритм for_each(выполняет функцию (функтор)) для вычисления суммы квадратов элементов
+                // вычисление суммы квадратов элементов
                 for_each(vec.begin(), vec.end(), [&sum_of_squares](int x) {
                     sum_of_squares += x * x;
                 });
@@ -786,7 +755,7 @@ int main() {
                });
 
                if (has_repeating_chars) {
-                   // Реверсируем строку
+
                    reverse(input.begin(), input.end());
                }
 
@@ -809,14 +778,12 @@ int main() {
                    vec.push_back(element);
                }
 
-               // Используем стандартный алгоритм for_each с лямбда-функцией
                for_each(vec.begin(), vec.end(), [](int& x) {
                    if (x % 2 == 0) {
                        x = x * x;
                    }
                });
 
-               // Вывод результата
                cout << "Обработанный вектор: ";
                for (const int& x : vec) {
                    cout << x << " ";
